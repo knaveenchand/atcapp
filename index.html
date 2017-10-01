@@ -100,11 +100,6 @@
         <a href='#' id='refresher' class='ui-btn ui-shadow ui-corner-all ui-icon-refresh ui-btn-icon-notext'>Refresh</a>
 
     <div data-role="navbar">
-    
-    <?php
-   	date_default_timezone_set("Asia/Kolkata");
-   	$updatedtime = "<span>" .date('d-m-Y') .", " .date('h:i a') ."</span>";
-    ?>
 
       <ul>
          	<li><a href="#leaderboard" id="aleaderboard">Leaderboard</a></li>
@@ -209,7 +204,7 @@ $(".rotate").textrotator({
 	//console.log('fresh Get: ', data.result);
     	employees = data.result;
     	
-        $('#matches').append('<li data-role="list-divider">ATC Leaderboard <span class="ui-li-count"><?php echo $updatedtime; ?></span></li>');    
+        $('#matches').append('<li data-role="list-divider">ATC Leaderboard <span class="ui-li-count"> Updated</span></li>');    
    	 $.each(employees, function(index, employee) {
         $('#matches').append('<li>'+ employee.Rank + '. ' + employee.PlayerFirstName +' <span class="ui-li-count">' +employee.PlayerRating +'</span></li>');
 
