@@ -82,20 +82,145 @@
 			
 	<div data-role="content" id="content">
 		<div id="my-div">
-                <img src="http://superkidschess.com/wp-content/themes/superkidsbunny/images/sun.png" 
-                alt="image"/>
+                <img src="http://superkidschess.com/wp-content/themes/superkidsbunny/images/sun.png" alt="image"/>
                   <p>To Get Started, Slide <br/><span class="rotate">Left, Right, Up, Down, Anyway, Easy</span></p>
                   <img src="http://atcapp.superkidschess.com/wp-content/uploads/2017/04/loader.gif"></img>
 
                 </div>
         
-        </div>
-
-	
-        </div>
+        </div>	
+     </div>
 
 
     </div><!-- #content .site-content -->
 </div><!-- #primary .content-area -->
+	
+<!-- ...........PAGE LEADERBOARD............... --> 
+
+ <div data-role="page" id="leaderboard">
+  <div data-role="header" data-position="fixed">
+    <h1>ATC App</h1>
+        <a href="#" class="ui-btn ui-shadow ui-corner-all ui-icon-back ui-btn-icon-notext" data-rel="back">Go Back</a>
+        <a href='#' id='refresher' class='ui-btn ui-shadow ui-corner-all ui-icon-refresh ui-btn-icon-notext'>Refresh</a>
+
+    <div data-role="navbar">
+    
+    <?php
+   	date_default_timezone_set("Asia/Kolkata");
+   	$updatedtime = "<span>" .date('d-m-Y') .", " .date('h:i a') ."</span>";
+    ?>
+
+      <ul>
+         	<li><a href="#leaderboard" id="aleaderboard">Leaderboard</a></li>
+        	<li><a href="#pageone">Dashboard</a></li>
+      </ul>
+    </div>
+  </div>
+
+
+  <div data-role="content" class="ui-content">
+    	
+  	            <div id="resultLog"></div>
+
+
+          <ul data-role="listview" data-inset="true" id="matches"></ul>       
+</div>
+
+  <div data-role="footer" data-position="fixed" class="commonfooter">
+  
+  </div>
+</div> 
+	
+<script>
+
+$('#index').on('swipeleft',function(){
+	      $.mobile.changePage("#leaderboard", 
+	      {
+	      transition:"slide"
+	      });
+} );
+
+$('#index').on('swiperight',function(){
+
+	      $.mobile.changePage("#leaderboard", 
+	      {
+	      transition:"flip"
+	      });	
+} );
+
+$('#index').on('swipedown',function(){
+	      $.mobile.changePage("#leaderboard", 
+	      {
+	      transition:"slidedown"
+	      });
+} 
+		);
+$('#index').on('swipeup',function(){
+
+      $.mobile.changePage("#leaderboard", 
+      {
+      transition:"slideup"
+      });
+
+} 
+);
+</script>
+
+
+    <!--=== Get Started ===-->  
+
+
+<script>
+$(".rotate").textrotator({
+  animation: "dissolve", // You can pick the way it animates when rotating through words. Options are dissolve (default), fade, flip, flipUp, flipCube, flipCubeUp and spin.
+  separator: ",", // If you don't want commas to be the separator, you can define a new separator (|, &, * etc.) by yourself using this field.
+  speed: 2000 // How many milliseconds until the next word show.
+});
+</script>
+
+<script>
+
+	$("#refresher").on('click', pullLeaderboard);
+	$("#leaderboard").on('pageinit', pullLeaderboard);
+
+        function pullLeaderboard() {
+        
+        $("#matches").hide();
+        $("#resultLog").html("<h3>Getting latest ATC Leaderboard. Please wait ...</h3>");
+
+
+                $.ajax({
+                  type: "GET",
+                  url: "http://atcapp.superkidschess.com/android/getLeaderboard.php",
+                  cache: false,
+                  dataType: "json",
+                  success: onSuccess
+                });
+        }
+
+        $("#resultLog").ajaxError(function(event, request, settings, exception) {
+          $("#resultLog").html("Error Calling: " + settings.url + "<br />HTTP Code: " + request.status);
+        });
+
+        function onSuccess(data)
+        {
+                $('#matches li').remove();
+
+	//console.log('fresh Get: ', data.result);
+    	employees = data.result;
+    	
+        $('#matches').append('<li data-role="list-divider">ATC Leaderboard <span class="ui-li-count"><?php echo $updatedtime; ?></span></li>');    
+   	 $.each(employees, function(index, employee) {
+        $('#matches').append('<li>'+ employee.Rank + '. ' + employee.PlayerFirstName +' <span class="ui-li-count">' +employee.PlayerRating +'</span></li>');
+
+    	});
+        $("#matches").show(1500);
+        $("#resultLog").html("");
+
+
+    	$("#matches").listview("refresh");
+
+        }
+</script>
 
 </body>
